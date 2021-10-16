@@ -1,0 +1,59 @@
+
+body {
+    background-color: rgb(250, 197, 191);
+}
+.crapchat {
+    margin-left: 10%
+}
+
+.login {
+    margin-left: 10%
+}
+
+.new-user{
+    margin-left: 17%
+}
+
+.uname{
+    font-weight: bold;
+}
+
+.chat{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.new-chat{
+    margin-bottom: 50px;
+    margin-top: 20px;
+}
+
+.chat-history{
+    text-decoration: underline;
+}
+
+.user-list{
+    margin-bottom:10px
+}
+
+.start-new-chat{
+    display:flex;
+    flex-direction:column;
+}
+
+.new-chat-enter{
+    margin-bottom: 5px;
+}
+
+.message{
+    font-size: 20px;
+}
+
+.send-chat{
+    height: 40px;
+}
+
+.sign-up{
+    margin-left: 10%
+}

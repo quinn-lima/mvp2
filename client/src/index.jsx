@@ -24,7 +24,8 @@ class App extends React.Component {
           chatUser: '',
           chatMessage: '',
           activeChat: null,
-          messagesList: []
+          messagesList: [],
+          chatButton: true
       };
 
       this.signUp = this.signUp.bind(this);
@@ -34,6 +35,9 @@ class App extends React.Component {
       this.sendNewChat = this.sendNewChat.bind(this);
       this.newChat = this.newChat.bind(this);
       this.changeChat = this.changeChat.bind(this);
+      this.cancel = this.cancel.bind(this);
+      this.newChatButton = this.newChatButton.bind(this);
+      this.cancelChat = this.cancelChat.bind(this);
     }
 
     componentDidMount () {
@@ -46,6 +50,14 @@ class App extends React.Component {
             login: false
         })
 
+    }
+
+    cancel () {
+        this.setState({
+            signUp: false,
+            login: true,
+            chat: false,
+        })
     }
 
     changeState (e) {
@@ -175,6 +187,12 @@ class App extends React.Component {
 
     }
 
+    newChatButton () {
+        this.setState({
+            chatButton: false
+        })
+    }
+
     changeChat (e) {
         console.log('activeChat', e.target.value)
         this.setState({
@@ -183,12 +201,18 @@ class App extends React.Component {
 
     }
 
+    cancelChat () {
+        this.setState({
+            chatButton: true
+        })
+    }
+
     render () {
         return (
             <div>
-            <SignUp state = {this.state} sendSignUpInfo = {this.sendSignUpInfo} changeState = {this.changeState}/>  
+            <SignUp state = {this.state} sendSignUpInfo = {this.sendSignUpInfo} changeState = {this.changeState} cancel = {this.cancel}/>  
             <Login signUp = {this.signUp} state = {this.state} changeState = {this.changeState} login = {this.login}/>
-            <Chat state = {this.state} changeState = {this.changeState} sendNewChat = {this.sendNewChat} changeChat = {this.changeChat} newChat = {this.newChat}/> 
+            <Chat state = {this.state} changeState = {this.changeState} sendNewChat = {this.sendNewChat} changeChat = {this.changeChat} newChat = {this.newChat} newChatButton = {this.newChatButton} cancelChat = {this.cancelChat}/> 
             </div>
         )
     }
