@@ -5,7 +5,7 @@ var db = require('./index.js');
 module.exports = {
       signUp: function(info) {
         return new Promise((resolve, reject) => {
-          db.query(`INSERT INTO messenger_schema.users (username, password) VALUES ('${info.username}', '${info.password}')`, [], (err, res) => {
+          db.query(`INSERT INTO messenger_schema.users (username, password, salt) VALUES ('${info.username}', '${info.password}', '${info.salt}')`, [], (err, res) => {
              if (err) {
                reject(err);
              } else {
@@ -16,9 +16,22 @@ module.exports = {
 
       },
 
-      login: function(info) {
+      login: function(username, password) {
         return new Promise((resolve, reject) => {
-          db.query(`SELECT users.id FROM messenger_schema.users WHERE users.username = '${info.username}' AND users.password = '${info.password}'`, [], (err, res) => {
+          db.query(`SELECT users.id FROM messenger_schema.users WHERE users.username = '${username}' AND users.password = '${password}'`, [], (err, res) => {
+             if (err) {
+               reject(err);
+             } else {
+               resolve(res);
+             }
+           });
+         });
+
+      },
+
+      getSalt: function(info) {
+        return new Promise((resolve, reject) => {
+          db.query(`SELECT users.salt FROM messenger_schema.users WHERE users.username = '${info.username}'`, [], (err, res) => {
              if (err) {
                reject(err);
              } else {
