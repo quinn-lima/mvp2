@@ -1,8 +1,17 @@
-import React from 'react';
+import * as React from "react";
+//state = {this.state} sendSignUpInfo = {this.sendSignUpInfo} changeState = {this.changeState} cancel = {this.cancel}
 
-const SignUp = (props) => {
+interface Props {
+  sendSignUpInfo: () => void,
+  state: boolean,
+  changeState: (event: React.ChangeEvent<HTMLInputElement>) => void,
+  cancel: () => void
+ }
+ 
 
-    if (props.state.signUp)  {
+const SignUp: React.FC<Props> = (props) => {
+
+    if (props.state)  {
 
         return (
         

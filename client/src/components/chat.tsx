@@ -1,6 +1,26 @@
-import React from 'react';
+import * as React from "react";
 
-const Chat = (props) => {
+//chat, chatbutton,  state = {this.state} changeState = {this.changeState} sendNewChat = {this.sendNewChat} changeChat = {this.changeChat} newChat = {this.newChat} newChatButton = {this.newChatButton} cancelChat = {this.cancelChat}
+
+interface State {
+    chat: boolean,
+    messagesList: number[],
+    chatButton: boolean
+}
+
+interface Props {
+    sendNewChat: () => void,
+    changeState: (event: React.ChangeEvent<HTMLInputElement>) => void,
+    changeChat: (React.MouseEventHandler<HTMLLIElement>),
+    newChat: () => void,
+    newChatButton: () => void,
+    cancelChat: () => void,
+    activeChat: {id: number, username: string} | null,
+    state: State
+   }
+   
+
+const Chat: React.FC<Props> = (props) => {
 
     if (props.state.chat) {
 
@@ -31,9 +51,13 @@ const Chat = (props) => {
             <h3> Chat History </h3>
              <ol>
             {function() {
+               interface messagesList {
+                   [key: string]: any
+               };
+    
                 let list = [];
                 for (let username in props.state.messagesList) {
-                    list.push(<li className = "user-list" value = {props.state.messagesList[username].id} onClick = {props.changeChat}>{username}</li>)
+                    list.push(<li className = "user-list" value = {(props.state.messagesList as messagesList)[username].id} onClick = {props.changeChat}>{username}</li>)
             }
             return list;
             }()}
@@ -43,12 +67,16 @@ const Chat = (props) => {
              <div className = "messages">
             <h2> Messages </h2>
             {function() {
-                if (props.state.activeChat == null) {
+                interface messagesList {
+                    [key: string]: any
+                };
+                
+                if (props.activeChat == null) {
                     return null;
                 } else {
                     let chat = [];
-                    for (let i = 0; i < props.state.messagesList[props.state.activeChat.username].messages.length; i++) {
-                        chat.push(<div className = "message">{props.state.messagesList[props.state.activeChat.username].messages[i].fromusername + ': ' + props.state.messagesList[props.state.activeChat.username].messages[i].message}</div>)
+                    for (let i = 0; i < (props.state.messagesList as messagesList)[props.activeChat.username].messages.length; i++) {
+                        chat.push(<div className = "message">{(props.state.messagesList as messagesList)[props.activeChat.username].messages[i].fromusername + ': ' + (props.state.messagesList as messagesList)[props.activeChat.username].messages[i].message}</div>)
                     }
                     return chat;
                     }
