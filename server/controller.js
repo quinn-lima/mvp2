@@ -1,8 +1,14 @@
 const database = require('../database/database.js');
+const User = require('./hash/user.js')
+//const models = require('./hash/models.js');
 
 module.exports = {
     signUp: (req, res) => {
-     database.signUp(req.body).then((results) => {
+
+    let userObj = User.create(req.body.username, req.body.password)
+    console.log(userObj)
+    
+     database.signUp(userObj).then((results) => {
 
             res.send(200)
   
@@ -13,7 +19,17 @@ module.exports = {
     },
     
     login: (req, res) => {
-        database.login(req.body).then((results) => {
+        //get salt from database
+        database.getSalt(req.body).then((data) => {
+            console.log(data.rows[0].salt)
+            let salt = data.rows[0].salt
+
+        //create new password with salt from database, then put it into database.login
+        let attemptedUser = User.create(req.body.username, req.body.password, salt);
+        let attemptedPassword = attemptedUser.password;
+        
+
+        database.login(req.body.username, attemptedPassword).then((results) => {
 
             if (results.rows.length > 0) {
                 database.getMessages(results.rows[0].id).then((messages) => {
@@ -54,6 +70,7 @@ module.exports = {
              }).catch((err) => {
                  console.log(err)
              })
+    })
      
        },
 

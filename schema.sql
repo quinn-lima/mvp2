@@ -7,7 +7,8 @@ SET search_path TO messenger_schema;
         reviews_key UUID DEFAULT uuid_generate_v4 (),
         id serial NOT NULL UNIQUE,
         username VARCHAR(100),
-        password VARCHAR(50),
+        password VARCHAR(150),
+        salt VARCHAR(150),
         Primary Key (id)
     );
     CREATE INDEX ON users(id);
