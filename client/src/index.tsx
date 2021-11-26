@@ -1,18 +1,35 @@
 
-import React from 'react';
-import ReactDOM from 'react-dom';
-import Login from './components/login.jsx';
-import SignUp from "./components/signUp.jsx";
-import Chat from "./components/chat.jsx";
+//import React from 'react';
+import * as React from "react";
+//import ReactDOM from 'react-dom';
+import * as ReactDOM from "react-dom";
+import Login from './components/login';
+import SignUp from "./components/signUp";
+import Chat from "./components/chat";
 import axios from 'axios';
 
 //things to do
 //newChat- function which submits a post request to add a new chat to database with user
 //
+//type MyProps = {string: string};
 
 
-class App extends React.Component {
-    constructor (props) {
+interface MyState {
+        signUp: boolean,
+          login: boolean,
+          chat: boolean,
+          id: number | null,
+          username: string,
+          password: string,
+          chatUser: string,
+          chatMessage: string,
+          activeChat: {id: number, username: string} | null,
+          messagesList: any,
+          chatButton: boolean
+}
+
+class App extends React.Component<any, MyState> {
+    constructor (props: any) {
       super(props);
       this.state = {
           signUp: false,
@@ -60,25 +77,42 @@ class App extends React.Component {
         })
     }
 
-    changeState (e) {
-        this.setState({
+    changeState (e: React.ChangeEvent<any>) {
+        this.setState((current) => ({
+            ...current,
             [e.target.name]: e.target.value
-        })
+        }))
 
     }
 
     login () {
-        axios.post('/login', {username: this.state.username, password: this.state.password}).then((results) => {
-
+        interface Results {config: any
+                            data: {pass: boolean, id: number, messages: any}
+                            headers: any
+                            request: any
+                            status: number
+                            statusText: string}
+       
+        axios.post('/login', {username: this.state.username, password: this.state.password}).then((results: Results) => {
+            console.log('resultagdo', results)
+        
             //iterate through and make an array of objects that has 
             //each object has a user then all of the messages for that user as an array
             //[{id: , username: '', messages: [], }]
-            let personalMessages = {};
+            interface object1 {
+                id: number,
+                messages: any
+            }
+           interface personalMessages {
+               [key: string]: object1 | undefined
+           };
+
+            let personalMessages: personalMessages = {};
 
             for (let i = 0; i < results.data.messages.length; i++) {
                 if (personalMessages[results.data.messages[i].username] === undefined) {
-                    let object = {id: results.data.messages[i].id, messages: [results.data.messages[i]]}
-                    personalMessages[results.data.messages[i].username] = object;
+                    let object1 = {id: results.data.messages[i].id, messages: [results.data.messages[i]]}
+                    personalMessages[results.data.messages[i].username] = object1;
                 } else {
                     personalMessages[results.data.messages[i].username].messages.push(results.data.messages[i])
                 }
@@ -86,7 +120,7 @@ class App extends React.Component {
         
 
             for (let key in personalMessages) {
-                let sorted = personalMessages[key].messages.sort(function(a, b) {
+                let sorted = personalMessages[key].messages.sort(function(a: any, b: any) {
                     return a.messageid - b.messageid;
                     });
 
@@ -110,9 +144,19 @@ class App extends React.Component {
 
     sendNewChat () {
         // first make a get request to see if that is a user, if it is then enter chat in database
-        axios.post('/newMessage', {from: this.state.id, toName: this.state.chatUser, username: this.state.username, message: this.state.chatMessage}).then((results) => {
+        axios.post('/newMessage', {from: this.state.id, toName: this.state.chatUser, username: this.state.username, message: this.state.chatMessage}).then((results: any) => {
             console.log('resultsss', results)
-            let personalMessages = {};
+        
+            interface object1 {
+                id: number,
+                messages: any
+            }
+           interface personalMessages {
+               [key: string]: object1 | undefined
+           };
+
+            let personalMessages: personalMessages = {};
+            
 
             for (let i = 0; i < results.data.messages.length; i++) {
                 if (personalMessages[results.data.messages[i].username] === undefined) {
@@ -124,7 +168,7 @@ class App extends React.Component {
             }
             
             for (let key in personalMessages) {
-                let sorted = personalMessages[key].messages.sort(function(a, b) {
+                let sorted = personalMessages[key].messages.sort(function(a: any, b: any) {
                     return a.messageid - b.messageid;
                     });
 
@@ -146,10 +190,18 @@ class App extends React.Component {
     }
 
     newChat () {
-        axios.post('/newChat', {from: this.state.id, to: this.state.activeChat.id, username: this.state.username, message: this.state.chatMessage}).then((results) => {
+        axios.post('/newChat', {from: this.state.id, to: this.state.activeChat.id, username: this.state.username, message: this.state.chatMessage}).then((results: any) => {
 
-            let personalMessages = {};
+            interface object1 {
+                id: number,
+                messages: any
+            }
+           interface personalMessages {
+               [key: string]: object1 | undefined
+           };
 
+            let personalMessages: personalMessages = {};
+            
             for (let i = 0; i < results.data.messages.length; i++) {
                 if (personalMessages[results.data.messages[i].username] === undefined) {
                     let object = {id: results.data.messages[i].id, messages: [results.data.messages[i]]}
@@ -160,7 +212,7 @@ class App extends React.Component {
             }
             
             for (let key in personalMessages) {
-                let sorted = personalMessages[key].messages.sort(function(a, b) {
+                let sorted = personalMessages[key].messages.sort(function(a: any, b: any) {
                     return a.messageid - b.messageid;
                     });
 
@@ -193,7 +245,7 @@ class App extends React.Component {
         })
     }
 
-    changeChat (e) {
+    changeChat (e : React.ChangeEvent<any>) {
         console.log('activeChat', e.target.value)
         this.setState({
             activeChat: {id: e.target.value, username: e.target.innerText}
@@ -210,9 +262,9 @@ class App extends React.Component {
     render () {
         return (
             <div>
-            <SignUp state = {this.state} sendSignUpInfo = {this.sendSignUpInfo} changeState = {this.changeState} cancel = {this.cancel}/>  
-            <Login signUp = {this.signUp} state = {this.state} changeState = {this.changeState} login = {this.login}/>
-            <Chat state = {this.state} changeState = {this.changeState} sendNewChat = {this.sendNewChat} changeChat = {this.changeChat} newChat = {this.newChat} newChatButton = {this.newChatButton} cancelChat = {this.cancelChat}/> 
+            <SignUp state = {this.state.signUp} sendSignUpInfo = {this.sendSignUpInfo} changeState = {this.changeState} cancel = {this.cancel}/>  
+            <Login signUp = {this.signUp} state = {this.state.login} changeState = {this.changeState} login = {this.login}/>
+            <Chat state = {{chatButton: this.state.chatButton, chat : this.state.chat, messagesList: this.state.messagesList}} activeChat = {this.state.activeChat} changeState = {this.changeState} sendNewChat = {this.sendNewChat} changeChat = {this.changeChat} newChat = {this.newChat} newChatButton = {this.newChatButton} cancelChat = {this.cancelChat}/> 
             </div>
         )
     }

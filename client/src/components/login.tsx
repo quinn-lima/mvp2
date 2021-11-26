@@ -1,8 +1,16 @@
-import React from 'react';
+import * as React from "react";
+//signUp = {this.signUp} state = {this.state} changeState = {this.changeState} login = {this.login}
+interface Props {
+    signUp: () => void,
+    state: boolean,
+    changeState: (event: React.ChangeEvent<HTMLInputElement>) => void,
+    login: () => void
+   }
+   
 
-const Login = (props) => {
+const Login: React.FC<Props> = (props) => {
 
-    if (props.state.login) {
+    if (props.state) {
 
      return (
         <div>
