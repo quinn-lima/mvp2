@@ -1,4 +1,6 @@
 import * as React from "react";
+import { useNavigate } from 'react-router-dom';
+
 //signUp = {this.signUp} state = {this.state} changeState = {this.changeState} login = {this.login}
 interface Props {
     signUp: () => void,
@@ -9,8 +11,11 @@ interface Props {
    
 
 const Login: React.FC<Props> = (props) => {
+    const navigate = useNavigate();
 
-    if (props.state) {
+    if (props.state === true) {
+        navigate('/chat')
+    }
 
      return (
         <div>
@@ -28,15 +33,12 @@ const Login: React.FC<Props> = (props) => {
         <br></br>
 
         <div className="new-user" >
-            <button onClick = {props.signUp}>new user?</button>
+            <button onClick = {() => {navigate('/signup')}}>new user?</button>
         </div>
 
         </div>
     )
-      } else {
-
-       return null
-      }
+      
 }
 
-export default Login;
+export default (Login);

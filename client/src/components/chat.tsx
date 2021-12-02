@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useNavigate } from 'react-router-dom';
 
 //chat, chatbutton,  state = {this.state} changeState = {this.changeState} sendNewChat = {this.sendNewChat} changeChat = {this.changeChat} newChat = {this.newChat} newChatButton = {this.newChatButton} cancelChat = {this.cancelChat}
 
@@ -17,13 +18,18 @@ interface Props {
     cancelChat: () => void,
     activeChat: {id: number, username: string} | null,
     state: State
+    logout: () => void
    }
    
 
 const Chat: React.FC<Props> = (props) => {
+    const navigate = useNavigate();
 
-    if (props.state.chat) {
-
+    const setChatandNav = () => {
+        navigate('/')
+        props.logout()
+    }
+if (props.state.chat) {
      return (
          <div className = "chat">
              <div className = "column-one">
@@ -88,14 +94,18 @@ const Chat: React.FC<Props> = (props) => {
              <br></br>
              <br></br>
              <button type="submit" onClick = {props.newChat}>send</button>
+             <br></br>
+             <br></br>
+             <br></br>
+             <button type="submit" onClick = {setChatandNav}>logout</button>
              </div>
          </div>
          
         )
-      } else {
-
-       return null
-      }
+} else {
+    return null;
+}
+      
 }
 
-export default Chat;
+export default (Chat);

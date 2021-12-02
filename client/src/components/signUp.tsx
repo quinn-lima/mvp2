@@ -1,4 +1,6 @@
 import * as React from "react";
+import { useNavigate } from 'react-router-dom';
+
 //state = {this.state} sendSignUpInfo = {this.sendSignUpInfo} changeState = {this.changeState} cancel = {this.cancel}
 
 interface Props {
@@ -10,8 +12,13 @@ interface Props {
  
 
 const SignUp: React.FC<Props> = (props) => {
+  const navigate = useNavigate();
 
-    if (props.state)  {
+  const sendLoginAndNavigate = function () {
+    props.sendSignUpInfo()
+    navigate('/')
+
+  }
 
         return (
         
@@ -30,14 +37,12 @@ const SignUp: React.FC<Props> = (props) => {
     <br></br>
 
     <div className="clearfix">
-      <button type="button" className="cancelbtn" onClick = {props.cancel}>Cancel</button>
-      <button type="submit" className="signupbtn" onClick = {props.sendSignUpInfo}>Sign Up</button>
+      <button type="button" className="cancelbtn" onClick = {()=>{navigate('/')}}>Cancel</button>
+      <button type="submit" className="signupbtn" onClick = {sendLoginAndNavigate}>Sign Up</button>
     </div>
     </div>
     
-         )} else {
-             return null;
-         } 
+         )
 }
 
-export default SignUp;
+export default (SignUp);

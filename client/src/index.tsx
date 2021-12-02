@@ -7,12 +7,15 @@ import Login from './components/login';
 import SignUp from "./components/signUp";
 import Chat from "./components/chat";
 import axios from 'axios';
-
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+//import { createBrowserHistory } from 'history';
+import { createBrowserHistory } from 'history';
+import Cookies from 'js-cookie';
 //things to do
 //newChat- function which submits a post request to add a new chat to database with user
 //
 //type MyProps = {string: string};
-
+const history = createBrowserHistory();
 
 interface MyState {
         signUp: boolean,
@@ -25,7 +28,8 @@ interface MyState {
           chatMessage: string,
           activeChat: {id: number, username: string} | null,
           messagesList: any,
-          chatButton: boolean
+          chatButton: boolean,
+          auth: boolean
 }
 
 class App extends React.Component<any, MyState> {
@@ -42,7 +46,8 @@ class App extends React.Component<any, MyState> {
           chatMessage: '',
           activeChat: null,
           messagesList: [],
-          chatButton: true
+          chatButton: true,
+          auth: false
       };
 
       this.signUp = this.signUp.bind(this);
@@ -55,9 +60,23 @@ class App extends React.Component<any, MyState> {
       this.cancel = this.cancel.bind(this);
       this.newChatButton = this.newChatButton.bind(this);
       this.cancelChat = this.cancelChat.bind(this);
+      this.logout = this.logout.bind(this);
     }
 
     componentDidMount () {
+        
+        const user = Cookies.get("user")
+        const password = Cookies.get("password")
+        console.log('dododod', user, password)
+        if (user && password) {
+            // call login with password stored in cookie
+            this.setState({
+                username: user,
+                password: password
+            })
+            setTimeout(()=>this.login(), 50)
+            
+        }
 
     }
 
@@ -78,6 +97,7 @@ class App extends React.Component<any, MyState> {
     }
 
     changeState (e: React.ChangeEvent<any>) {
+        console.log('fad', e.target.value)
         this.setState((current) => ({
             ...current,
             [e.target.name]: e.target.value
@@ -128,6 +148,9 @@ class App extends React.Component<any, MyState> {
             }
 
            if (results.data.pass) {
+               Cookies.set('user', this.state.username)
+               Cookies.set('password', this.state.password)
+
                this.setState({
                 signUp: false, 
                 login: false,
@@ -135,6 +158,7 @@ class App extends React.Component<any, MyState> {
                 id: results.data.id,
                 messagesList: personalMessages
             })
+            history.push('/chat')
         }
  //       axios.post('/getMessages', {})
             //make get request to get all the chats from  
@@ -201,7 +225,7 @@ class App extends React.Component<any, MyState> {
            };
 
             let personalMessages: personalMessages = {};
-            
+
             for (let i = 0; i < results.data.messages.length; i++) {
                 if (personalMessages[results.data.messages[i].username] === undefined) {
                     let object = {id: results.data.messages[i].id, messages: [results.data.messages[i]]}
@@ -259,13 +283,34 @@ class App extends React.Component<any, MyState> {
         })
     }
 
+    logout () {
+        Cookies.remove("user")
+        Cookies.remove("password")
+        this.setState({
+            chat: false,
+            username: '',
+            password: ''
+        })
+    }
+    
+
+
     render () {
         return (
-            <div>
-            <SignUp state = {this.state.signUp} sendSignUpInfo = {this.sendSignUpInfo} changeState = {this.changeState} cancel = {this.cancel}/>  
-            <Login signUp = {this.signUp} state = {this.state.login} changeState = {this.changeState} login = {this.login}/>
-            <Chat state = {{chatButton: this.state.chatButton, chat : this.state.chat, messagesList: this.state.messagesList}} activeChat = {this.state.activeChat} changeState = {this.changeState} sendNewChat = {this.sendNewChat} changeChat = {this.changeChat} newChat = {this.newChat} newChatButton = {this.newChatButton} cancelChat = {this.cancelChat}/> 
-            </div>
+        <Router>
+          <React.Fragment>
+            <Routes>
+                <Route path='/' element = {<Login signUp = {this.signUp} state = {this.state.chat} changeState = {this.changeState} login = {this.login}/>}>
+                </Route>
+                <Route path='/signup' element = {<SignUp state = {this.state.chat} sendSignUpInfo = {this.sendSignUpInfo} changeState = {this.changeState} cancel = {this.cancel}/>}>
+                </Route>
+                <Route path='/chat' element = {<Chat state = {{chatButton: this.state.chatButton, chat : this.state.chat, messagesList: this.state.messagesList}} activeChat = {this.state.activeChat} changeState = {this.changeState} sendNewChat = {this.sendNewChat} changeChat = {this.changeChat} newChat = {this.newChat} newChatButton = {this.newChatButton} cancelChat = {this.cancelChat} logout = {this.logout}/>}>
+                </Route>
+            </Routes>
+          </React.Fragment>
+        </Router>
+            
+            
         )
     }
 }
