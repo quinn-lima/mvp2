@@ -4,8 +4,6 @@ const cors = require('cors');
 var bodyParser = require('body-parser')
 const controller = require ('./controller.js')
 
-//convert to typescript 1 day - do this on friday
-
 //add cookies to login 1 day - saturday
 
 //add make it so voice recorder records to mp3 file which gets converted to wav 2 days
@@ -20,6 +18,14 @@ const app = express();
 app.use(express.static(__dirname + '/../client/dist'));
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}));
+
+app.get('/*', function(req, res) {
+  res.sendFile(path.resolve(__dirname, '../client/dist/index.html'), function(err) {
+    if (err) {
+      res.status(500).send(err);
+    }
+  });
+});
   
   app.use(cors());
   

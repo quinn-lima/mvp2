@@ -25,7 +25,6 @@ class Users extends Model {
       
     } else {
       let salt = giveSalt
-      console.log('yuuuhhh')
       let newUser = {
       username: username,
       salt: salt,
